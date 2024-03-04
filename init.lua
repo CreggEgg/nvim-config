@@ -68,11 +68,12 @@ vim.opt.rtp:prepend(lazypath)
 --    as they will be available in your neovim runtime.
 require('lazy').setup({
   -- NOTE: First, some plugins that don't require any configuration
+  'ggandor/leap.nvim',
 
   -- Git related plugins
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
-
+  'ThePrimeagen/vim-be-good',
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 { 'codota/tabnine-nvim', build = "pwsh.exe -file .\\dl_binaries.ps1" },
@@ -86,7 +87,6 @@ require('lazy').setup({
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
   {
-    -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     dependencies = {
       -- Automatically install LSPs to stdpath for neovim
@@ -287,6 +287,8 @@ require("bluloco").setup({
 vim.opt.termguicolors = true
 vim.cmd('colorscheme bluloco')
 
+require('leap').create_default_mappings()
+
 require('tabnine').setup({
   disable_auto_comment=true,
   accept_keymap="<Tab>",
@@ -305,6 +307,7 @@ require('tabnine').setup({
 vim.o.hlsearch = false
 
 -- Make line numbers default
+vim.wo.relativenumber = true
 vim.wo.number = true
 
 vim.opt.mouse = ""
@@ -346,6 +349,26 @@ vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 -- Remap for dealing with word wrap
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+
+--Refresh lua config
+vim.api.nvim_create_user_command('Refreshlua', function ()
+ vim.cmd("luafile "..vim.env.MYVIMRC)
+end,{})
+
+
+--Edit lua config
+vim.api.nvim_create_user_command('Editlua', function ()
+ vim.cmd("e "..vim.env.MYVIMRC)
+end,{})
+
+--Open new window
+vim.api.nvim_create_user_command('Nw', function ()
+  os.execute('start Powershell')
+end,{})
+
+
+-- Telescope open with ctrl+p
+vim.keymap.set('n', '<C-p>', ":Telescope find_files")
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
