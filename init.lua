@@ -341,6 +341,7 @@ vim.o.completeopt = 'menuone,noselect'
 vim.o.termguicolors = true
 
 -- [[ Basic Keymaps ]]
+vim.keymap.set("n", "<Leader>ac", ":lua vim.lsp.buf.code_action()\n")
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
@@ -368,7 +369,7 @@ end,{})
 
 
 -- Telescope open with ctrl+p
-vim.keymap.set('n', '<C-p>', ":Telescope find_files")
+vim.keymap.set('n', '<C-p>', ":Telescope find_files\n")
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
