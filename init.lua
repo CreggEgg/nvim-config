@@ -76,14 +76,16 @@ require('lazy').setup({
   'ThePrimeagen/vim-be-good',
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
-  { 'codota/tabnine-nvim',  build = "pwsh.exe -file .\\dl_binaries.ps1" },
+  { 'codota/tabnine-nvim',       build = "pwsh.exe -file .\\dl_binaries.ps1" },
   {
-    'uloco/bluloco.nvim',
+    'xero/miasma.nvim',
     lazy = false,
     priority = 1000,
-    dependencies = { 'rktjmp/lush.nvim' },
+    config = function()
+      vim.cmd("colorscheme miasma")
+    end
   },
-  {'akinsho/git-conflict.nvim', version="*", config = true},
+  { 'akinsho/git-conflict.nvim', version = "*",                              config = true },
 
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
@@ -121,7 +123,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim', opts = {} },
+  { 'folke/which-key.nvim',  opts = {} },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -277,27 +279,24 @@ require('lazy').setup({
   -- { import = 'custom.plugins' },
 }, {})
 
-require("bluloco").setup({
-  style = "auto",
-  transparent = false,
-  italics = false,
-  terminal = vim.fn.has("gui_running") == 1,
-  guicursor = true
-})
+--require("bluloco").setup({
+--  style = "auto",
+--  transparent = false,
+--  italics = false,
+--  terminal = vim.fn.has("gui_running") == 1,
+--  guicursor = true
+--})
 
 vim.opt.termguicolors = true
-vim.cmd('colorscheme bluloco')
+vim.cmd("colorscheme miasma")
+--vim.cmd('colorscheme bluloco')
 
--- Bidirectional leap.nvim search
-vim.keymap.set({ 'n', 'x', 'o' }, 'f', '<Plug>(leap-forward)')
---vim.keymap.set('n', 's', function ()
---  require('leap').leap { target_windows = { vim.api.nvim_get_current_win() } }
---end)
 
 require('leap').create_default_mappings()
 
-vim.keymap.set('n', 's', function ()
-  require('leap').leap {target_windows = {vim.api.nvim_get_current_win() }}
+-- Bidirectional leap.nvim search
+vim.keymap.set('n', 's', function()
+  require('leap').leap { target_windows = { vim.api.nvim_get_current_win() } }
 end)
 
 require('tabnine').setup({
