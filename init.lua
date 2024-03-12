@@ -76,14 +76,16 @@ require('lazy').setup({
   'ThePrimeagen/vim-be-good',
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
-{ 'codota/tabnine-nvim', build = "pwsh.exe -file .\\dl_binaries.ps1" },
+  { 'codota/tabnine-nvim',       build = "pwsh.exe -file .\\dl_binaries.ps1" },
   {
-    'uloco/bluloco.nvim',
-    lazy=false,
-    priority=1000,
-    dependencies={'rktjmp/lush.nvim'},
+    'xero/miasma.nvim',
+    lazy = false,
+    priority = 1000,
+    config = function()
+      vim.cmd("colorscheme miasma")
+    end
   },
-  {'akinsho/git-conflict.nvim', version="*", config = true},
+  { 'akinsho/git-conflict.nvim', version = "*",                              config = true },
 
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
@@ -121,7 +123,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim', opts = {} },
+  { 'folke/which-key.nvim',  opts = {} },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -277,30 +279,33 @@ require('lazy').setup({
   -- { import = 'custom.plugins' },
 }, {})
 
-require("bluloco").setup({
-  style = "auto",
-  transparent = false,
-  italics = false,
-  terminal = vim.fn.has("gui_running") == 1,
-  guicursor = true
-})
+--require("bluloco").setup({
+--  style = "auto",
+--  transparent = false,
+--  italics = false,
+--  terminal = vim.fn.has("gui_running") == 1,
+--  guicursor = true
+--})
 
 vim.opt.termguicolors = true
-vim.cmd('colorscheme bluloco')
+vim.cmd("colorscheme miasma")
+--vim.cmd('colorscheme bluloco')
+
 
 require('leap').create_default_mappings()
 
-vim.keymap.set('n', 's', function ()
-  require('leap').leap {target_windows = {vim.api.nvim_get_current_win()}}
+-- Bidirectional leap.nvim search
+vim.keymap.set('n', 's', function()
+  require('leap').leap { target_windows = { vim.api.nvim_get_current_win() } }
 end)
 
 require('tabnine').setup({
-  disable_auto_comment=true,
-  accept_keymap="<Tab>",
+  disable_auto_comment = true,
+  accept_keymap = "<Tab>",
   dismiss_keymap = "<C-]>",
   debounce_ms = 800,
-  suggestion_color = {gui = "#808080", cterm = 244},
-  exclude_filetypes = {"TelescopePrompt", "NvimTree"},
+  suggestion_color = { gui = "#808080", cterm = 244 },
+  exclude_filetypes = { "TelescopePrompt", "NvimTree" },
   log_file_path = nil, -- absolute path to Tabnine log file
 })
 
@@ -346,6 +351,7 @@ vim.o.completeopt = 'menuone,noselect'
 vim.o.termguicolors = true
 
 -- [[ Basic Keymaps ]]
+vim.keymap.set("n", "<Leader>ac", ":lua vim.lsp.buf.code_action()\n")
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
@@ -356,24 +362,24 @@ vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = tr
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
 --Refresh lua config
-vim.api.nvim_create_user_command('Refreshlua', function ()
- vim.cmd("luafile "..vim.env.MYVIMRC)
-end,{})
+vim.api.nvim_create_user_command('Refreshlua', function()
+  vim.cmd("luafile " .. vim.env.MYVIMRC)
+end, {})
 
 
 --Edit lua config
-vim.api.nvim_create_user_command('Editlua', function ()
- vim.cmd("e "..vim.env.MYVIMRC)
-end,{})
+vim.api.nvim_create_user_command('Editlua', function()
+  vim.cmd("e " .. vim.env.MYVIMRC)
+end, {})
 
 --Open new window
-vim.api.nvim_create_user_command('Nw', function ()
+vim.api.nvim_create_user_command('Nw', function()
   os.execute('start Powershell')
-end,{})
+end, {})
 
 
 -- Telescope open with ctrl+p
-vim.keymap.set('n', '<C-p>', ":Telescope find_files")
+vim.keymap.set('n', '<C-p>', ":Telescope find_files\n")
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
