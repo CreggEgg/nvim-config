@@ -83,6 +83,7 @@ require('lazy').setup({
     priority = 1000,
     dependencies = { 'rktjmp/lush.nvim' },
   },
+  {'akinsho/git-conflict.nvim', version="*", config = true},
 
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
@@ -294,6 +295,10 @@ vim.keymap.set({ 'n', 'x', 'o' }, 'f', '<Plug>(leap-forward)')
 --end)
 
 require('leap').create_default_mappings()
+
+vim.keymap.set('n', 's', function ()
+  require('leap').leap {target_windows = {vim.api.nvim_get_current_win() }}
+end)
 
 require('tabnine').setup({
   disable_auto_comment = true,
