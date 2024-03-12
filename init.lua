@@ -76,12 +76,12 @@ require('lazy').setup({
   'ThePrimeagen/vim-be-good',
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
-{ 'codota/tabnine-nvim', build = "pwsh.exe -file .\\dl_binaries.ps1" },
+  { 'codota/tabnine-nvim',  build = "pwsh.exe -file .\\dl_binaries.ps1" },
   {
     'uloco/bluloco.nvim',
-    lazy=false,
-    priority=1000,
-    dependencies={'rktjmp/lush.nvim'},
+    lazy = false,
+    priority = 1000,
+    dependencies = { 'rktjmp/lush.nvim' },
   },
 
   -- NOTE: This is where your plugins related to LSP can be installed.
@@ -287,15 +287,21 @@ require("bluloco").setup({
 vim.opt.termguicolors = true
 vim.cmd('colorscheme bluloco')
 
+-- Bidirectional leap.nvim search
+vim.keymap.set({ 'n', 'x', 'o' }, 'f', '<Plug>(leap-forward)')
+--vim.keymap.set('n', 's', function ()
+--  require('leap').leap { target_windows = { vim.api.nvim_get_current_win() } }
+--end)
+
 require('leap').create_default_mappings()
 
 require('tabnine').setup({
-  disable_auto_comment=true,
-  accept_keymap="<Tab>",
+  disable_auto_comment = true,
+  accept_keymap = "<Tab>",
   dismiss_keymap = "<C-]>",
   debounce_ms = 800,
-  suggestion_color = {gui = "#808080", cterm = 244},
-  exclude_filetypes = {"TelescopePrompt", "NvimTree"},
+  suggestion_color = { gui = "#808080", cterm = 244 },
+  exclude_filetypes = { "TelescopePrompt", "NvimTree" },
   log_file_path = nil, -- absolute path to Tabnine log file
 })
 
@@ -352,20 +358,20 @@ vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = tr
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
 --Refresh lua config
-vim.api.nvim_create_user_command('Refreshlua', function ()
- vim.cmd("luafile "..vim.env.MYVIMRC)
-end,{})
+vim.api.nvim_create_user_command('Refreshlua', function()
+  vim.cmd("luafile " .. vim.env.MYVIMRC)
+end, {})
 
 
 --Edit lua config
-vim.api.nvim_create_user_command('Editlua', function ()
- vim.cmd("e "..vim.env.MYVIMRC)
-end,{})
+vim.api.nvim_create_user_command('Editlua', function()
+  vim.cmd("e " .. vim.env.MYVIMRC)
+end, {})
 
 --Open new window
-vim.api.nvim_create_user_command('Nw', function ()
+vim.api.nvim_create_user_command('Nw', function()
   os.execute('start Powershell')
-end,{})
+end, {})
 
 
 -- Telescope open with ctrl+p
