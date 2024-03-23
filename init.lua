@@ -279,6 +279,8 @@ require('lazy').setup({
   -- { import = 'custom.plugins' },
 }, {})
 
+require('lspconfig').gleam.setup {}
+
 --require("bluloco").setup({
 --  style = "auto",
 --  transparent = false,
@@ -308,6 +310,8 @@ require('tabnine').setup({
   exclude_filetypes = { "TelescopePrompt", "NvimTree" },
   log_file_path = nil, -- absolute path to Tabnine log file
 })
+
+
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -351,11 +355,14 @@ vim.o.completeopt = 'menuone,noselect'
 vim.o.termguicolors = true
 
 -- [[ Basic Keymaps ]]
-vim.keymap.set("n", "<Leader>ac", ":lua vim.lsp.buf.code_action()\n")
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
+
+vim.keymap.set('n', '<Leader>f', vim.lsp.buf.format)
+
+
 
 -- Remap for dealing with word wrap
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
