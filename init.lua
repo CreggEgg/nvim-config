@@ -70,6 +70,7 @@ require('lazy').setup({
   -- NOTE: First, some plugins that don't require any configuration
   'ggandor/leap.nvim',
 
+
   -- Git related plugins
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
