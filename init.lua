@@ -363,6 +363,9 @@ vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
 vim.keymap.set('n', '<Leader>f', vim.lsp.buf.format)
 
+vim.keymap.set('n', '<Leader>ep', ':Explore\n')
+
+vim.keymap.set('n', '<Leader>v', ':vsplit\n')
 
 
 -- Remap for dealing with word wrap
