@@ -286,8 +286,6 @@ require('lazy').setup({
   -- { import = 'custom.plugins' },
 }, {})
 
-require('lspconfig').gleam.setup {}
-
 --require("bluloco").setup({
 --  style = "auto",
 --  transparent = false,
@@ -608,6 +606,15 @@ local on_attach = function(_, bufnr)
     vim.lsp.buf.format()
   end, { desc = 'Format current buffer with LSP' })
 end
+
+
+require 'lspconfig'.gleam.setup {
+  cmd = { "glas", "--stdio" }
+}
+
+vim.api.nvim_create_autocmd('BufEnter', { pattern = { "*.gleam" }, callback = function(x) on_attach(nil, x.buf) end })
+
+-- require('lspconfig').gleam.setup {}
 
 -- document existing key chains
 require('which-key').register {
