@@ -76,7 +76,11 @@ require('lazy').setup({
     },
     lazy = false,
   },
-
+  {
+    "ThePrimeagen/harpoon",
+    branch = "harpoon2",
+    dependencies = { "nvim-lua/plenary.nvim" }
+  },
   -- Git related plugins
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
@@ -85,11 +89,11 @@ require('lazy').setup({
   'tpope/vim-sleuth',
   { 'codota/tabnine-nvim',       build = "pwsh.exe -file .\\dl_binaries.ps1" },
   {
-    'xero/miasma.nvim',
+    'rebelot/kanagawa.nvim',
     lazy = false,
     priority = 1000,
     config = function()
-      vim.cmd("colorscheme miasma")
+      vim.cmd("colorscheme kanagawa")
     end
   },
   { 'akinsho/git-conflict.nvim', version = "*",                              config = true },
@@ -295,10 +299,35 @@ require('lazy').setup({
 --})
 
 vim.opt.termguicolors = true
-vim.cmd("colorscheme miasma")
+vim.cmd("colorscheme kanagawa")
 --vim.cmd('colorscheme bluloco')
 
+vim.o.guifont = "Iosevka Nerd Font:h12"
 
+
+
+
+
+
+local function setup_harpoon()
+  local harpoon = require "harpoon"
+  harpoon:setup({})
+
+  vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+
+  vim.keymap.set("n", "<leader>ah", function() harpoon:list():append() end)
+
+  vim.keymap.set("n", "<C-h>", function() harpoon:list():select(1) end)
+  vim.keymap.set("n", "<C-t>", function() harpoon:list():select(2) end)
+  vim.keymap.set("n", "<C-n>", function() harpoon:list():select(3) end)
+  vim.keymap.set("n", "<C-s>", function() harpoon:list():select(4) end)
+
+  -- Toggle previous & next buffers stored within Harpoon list
+  vim.keymap.set("n", "<C-S-P>", function() harpoon:list():prev() end)
+  vim.keymap.set("n", "<C-S-N>", function() harpoon:list():next() end)
+end
+
+setup_harpoon()
 require('leap').create_default_mappings()
 
 -- Bidirectional leap.nvim search
@@ -394,7 +423,7 @@ end, {})
 
 
 -- Telescope open with ctrl+p
-vim.keymap.set('n', '<C-p>', ":Telescope find_files\n")
+vim.keymap.set('n', '<C-p>', ":Telescope git_files\n")
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
