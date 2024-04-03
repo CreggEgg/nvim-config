@@ -1,46 +1,3 @@
---[[
-
-=====================================================================
-==================== READ THIS BEFORE CONTINUING ====================
-=====================================================================
-
-Kickstart.nvim is *not* a distribution.
-
-Kickstart.nvim is a template for your own configuration.
-  The goal is that you can read every line of code, top-to-bottom, understand
-  what your configuration is doing, and modify it to suit your needs.
-
-  Once you've done that, you should start exploring, configuring and tinkering to
-  explore Neovim!
-
-  If you don't know anything about Lua, I recommend taking some time to read through
-  a guide. One possible example:
-  - https://learnxinyminutes.com/docs/lua/
-
-
-  And then you can explore or search through `:help lua-guide`
-  - https://neovim.io/doc/user/lua-guide.html
-
-
-Kickstart Guide:
-
-I have left several `:help X` comments throughout the init.lua
-You should run that command and read that help section for more information.
-
-In addition, I have some `NOTE:` items throughout the file.
-These are for you, the reader to help understand what is happening. Feel free to delete
-them once you know what you're doing, but they should serve as a guide for when you
-are first encountering a few different constructs in your nvim config.
-
-I hope you enjoy your Neovim journey,
-- TJ
-
-P.S. You can delete this when you're done too. It's your config now :)
---]]
-
--- Set <space> as the leader key
--- See `:help mapleader`
---  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
@@ -67,15 +24,7 @@ vim.opt.rtp:prepend(lazypath)
 --  You can also configure plugins after the setup call,
 --    as they will be available in your neovim runtime.
 require('lazy').setup({
-  -- NOTE: First, some plugins that don't require any configuration
   'ggandor/leap.nvim',
-  {
-    'numToStr/Comment.nvim',
-    opts = {
-      -- add any options here
-    },
-    lazy = false,
-  },
   {
     "ThePrimeagen/harpoon",
     branch = "harpoon2",
@@ -87,7 +36,6 @@ require('lazy').setup({
   'ThePrimeagen/vim-be-good',
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
-  { 'codota/tabnine-nvim',       build = "pwsh.exe -file .\\dl_binaries.ps1" },
   {
     'rebelot/kanagawa.nvim',
     lazy = false,
@@ -96,7 +44,6 @@ require('lazy').setup({
       vim.cmd("colorscheme kanagawa")
     end
   },
-  { 'akinsho/git-conflict.nvim', version = "*",                              config = true },
 
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
@@ -210,14 +157,6 @@ require('lazy').setup({
     },
   },
 
-  {
-    -- Theme inspired by Atom
-    'navarasu/onedark.nvim',
-    priority = 1000,
-    config = function()
-      vim.cmd.colorscheme 'onedark'
-    end,
-  },
 
   {
     -- Set lualine as statusline
@@ -225,7 +164,7 @@ require('lazy').setup({
     -- See `:help lualine.txt`
     opts = {
       options = {
-        icons_enabled = false,
+        icons_enabled = true,
         theme = 'onedark',
         component_separators = '|',
         section_separators = '',
@@ -335,17 +274,6 @@ vim.keymap.set('n', 's', function()
   require('leap').leap { target_windows = { vim.api.nvim_get_current_win() } }
 end)
 
-require('tabnine').setup({
-  disable_auto_comment = true,
-  accept_keymap = "<Tab>",
-  dismiss_keymap = "<C-]>",
-  debounce_ms = 800,
-  suggestion_color = { gui = "#808080", cterm = 244 },
-  exclude_filetypes = { "TelescopePrompt", "NvimTree" },
-  log_file_path = nil, -- absolute path to Tabnine log file
-})
-
-
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -396,9 +324,25 @@ vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
 vim.keymap.set('n', '<Leader>f', vim.lsp.buf.format)
 
+vim.keymap.set('n', '<Leader>w', ":w\n")
+
 vim.keymap.set('n', '<Leader>ep', ':Explore\n')
 
-vim.keymap.set('n', '<Leader>v', ':vsplit\n')
+vim.keymap.set('n', '<Leader>tr', function()
+  vim.cmd("vsplit")
+  vim.cmd("wincmd l")
+  vim.cmd("ter")
+end)
+vim.keymap.set('n', '<Leader>tl', function()
+  vim.cmd("vsplit")
+  vim.cmd("ter")
+end)
+vim.keymap.set('n', '<Leader>tj', function()
+  vim.cmd("split")
+  vim.cmd("wincmd j")
+  vim.cmd("ter")
+  vim.cmd('horizontal resize -10')
+end)
 
 
 -- Remap for dealing with word wrap
