@@ -241,7 +241,7 @@ vim.opt.termguicolors = true
 vim.cmd("colorscheme kanagawa")
 --vim.cmd('colorscheme bluloco')
 
-vim.o.guifont = "Iosevka Nerd Font:h12"
+vim.o.guifont = "Iosevka Nerd Font:h10"
 
 
 
