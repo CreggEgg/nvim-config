@@ -88,14 +88,15 @@ require('lazy').setup({
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
   { 'codota/tabnine-nvim',       build = "pwsh.exe -file .\\dl_binaries.ps1" },
-  {
-    'rebelot/kanagawa.nvim',
-    lazy = false,
-    priority = 1000,
-    config = function()
-      vim.cmd("colorscheme kanagawa")
-    end
-  },
+  -- {
+  --   'rebelot/kanagawa.nvim',
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     vim.cmd("colorscheme kanagawa")
+  --   end
+  -- },
+  'navarasu/onedark.nvim',
   { 'akinsho/git-conflict.nvim', version = "*",                              config = true },
 
   -- NOTE: This is where your plugins related to LSP can be installed.
@@ -115,23 +116,28 @@ require('lazy').setup({
       'folke/neodev.nvim',
     },
   },
-
-  {
-    -- Autocompletion
-    'hrsh7th/nvim-cmp',
-    dependencies = {
-      -- Snippet Engine & its associated nvim-cmp source
-      'L3MON4D3/LuaSnip',
-      'saadparwaiz1/cmp_luasnip',
-
-      -- Adds LSP completion capabilities
-      'hrsh7th/cmp-nvim-lsp',
-      'hrsh7th/cmp-path',
-
-      -- Adds a number of user-friendly snippets
-      'rafamadriz/friendly-snippets',
-    },
-  },
+  --
+  -- {
+  --   -- Autocompletion
+  --   'hrsh7th/nvim-cmp',
+  --   dependencies = {
+  --     -- Snippet Engine & its associated nvim-cmp source
+  --     'L3MON4D3/LuaSnip',
+  --     'saadparwaiz1/cmp_luasnip',
+  --
+  --     -- Adds LSP completion capabilities
+  --     'hrsh7th/cmp-nvim-lsp',
+  --     'hrsh7th/cmp-path',
+  --
+  --     -- Adds a number of user-friendly snippets
+  --     'rafamadriz/friendly-snippets',
+  --   },
+  -- },
+  {'VonHeikemen/lsp-zero.nvim', branch='v3.x'},
+  {'neovim/nvim-lspconfig'},
+  {'hrsh7th/cmp-nvim-lsp'},
+  {'hrsh7th/nvim-cmp'},
+  {'L3MON4D3/LuaSnip'},
 
   -- Useful plugin to show you pending keybinds.
   { 'folke/which-key.nvim',  opts = {} },
@@ -299,7 +305,7 @@ require('lazy').setup({
 --})
 
 vim.opt.termguicolors = true
-vim.cmd("colorscheme kanagawa")
+require('onedark').load()
 --vim.cmd('colorscheme bluloco')
 
 vim.o.guifont = "Iosevka Nerd Font:h12"
@@ -335,15 +341,15 @@ vim.keymap.set('n', 's', function()
   require('leap').leap { target_windows = { vim.api.nvim_get_current_win() } }
 end)
 
-require('tabnine').setup({
-  disable_auto_comment = true,
-  accept_keymap = "<Tab>",
-  dismiss_keymap = "<C-]>",
-  debounce_ms = 800,
-  suggestion_color = { gui = "#808080", cterm = 244 },
-  exclude_filetypes = { "TelescopePrompt", "NvimTree" },
-  log_file_path = nil, -- absolute path to Tabnine log file
-})
+-- require('tabnine').setup({
+--   disable_auto_comment = true,
+--   accept_keymap = "<Tab>",
+--   dismiss_keymap = "<C-]>",
+--   debounce_ms = 800,
+--   suggestion_color = { gui = "#808080", cterm = 244 },
+--   exclude_filetypes = { "TelescopePrompt", "NvimTree" },
+--   log_file_path = nil, -- absolute path to Tabnine log file
+-- })
 
 
 
@@ -637,11 +643,9 @@ local on_attach = function(_, bufnr)
 end
 
 
-require 'lspconfig'.gleam.setup {
-  cmd = { "glas", "--stdio" }
-}
 
 vim.api.nvim_create_autocmd('BufEnter', { pattern = { "*.gleam" }, callback = function(x) on_attach(nil, x.buf) end })
+
 
 -- require('lspconfig').gleam.setup {}
 
@@ -663,10 +667,32 @@ require('which-key').register({
   ['<leader>h'] = { 'Git [H]unk' },
 }, { mode = 'v' })
 
+local lsp_zero = require('lsp-zero').preset({
+  name='minimal',
+  set_lsp_keymaps = true,
+  manage_nvim_cmp = true,
+})
+lsp_zero.extend_lspconfig()
+lsp_zero.setup()
+
+lsp_zero.on_attach(function(client, bufnr)
+  lsp_zero.default_keymaps({buffer=bufnr})
+  on_attach(nil, bufnr)
+end)
+
+require('lspconfig').rust_analyzer.setup({})
+require('lspconfig').ocamllsp.setup({})
+require('lspconfig').ols.setup({})
+require('lspconfig').svelte.setup({})
+
+-- require 'lspconfig'.gleam.setup {
+--   cmd = { "glas", "--stdio" }
+-- }
+
 -- mason-lspconfig requires that these setup functions are called in this order
 -- before setting up the servers.
-require('mason').setup()
-require('mason-lspconfig').setup()
+-- require('mason').setup()
+-- require('mason-lspconfig').setup()
 
 -- Enable the following language servers
 --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
@@ -702,27 +728,28 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
 -- Ensure the servers above are installed
-local mason_lspconfig = require 'mason-lspconfig'
+-- local mason_lspconfig = require 'mason-lspconfig'
 
-mason_lspconfig.setup {
-  ensure_installed = vim.tbl_keys(servers),
-}
-
-mason_lspconfig.setup_handlers {
-  function(server_name)
-    require('lspconfig')[server_name].setup {
-      capabilities = capabilities,
-      on_attach = on_attach,
-      settings = servers[server_name],
-      filetypes = (servers[server_name] or {}).filetypes,
-    }
-  end,
-}
-
--- [[ Configure nvim-cmp ]]
--- See `:help cmp`
+-- mason_lspconfig.setup {
+--   ensure_installed = vim.tbl_keys(servers),
+-- }
+--
+-- mason_lspconfig.setup_handlers {
+--   function(server_name)
+--     require('lspconfig')[server_name].setup {
+--       capabilities = capabilities,
+--       on_attach = on_attach,
+--       settings = servers[server_name],
+--       filetypes = (servers[server_name] or {}).filetypes,
+--     }
+--   end,
+-- }
+--
+-- -- [[ Configure nvim-cmp ]]
+-- -- See `:help cmp`
 local cmp = require 'cmp'
 local luasnip = require 'luasnip'
+
 require('luasnip.loaders.from_vscode').lazy_load()
 luasnip.config.setup {}
 
