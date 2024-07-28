@@ -96,7 +96,8 @@ require('lazy').setup({
   --     vim.cmd("colorscheme kanagawa")
   --   end
   -- },
-  'navarasu/onedark.nvim',
+  --'navarasu/onedark.nvim',
+  'AlexvZyl/nordic.nvim',
   { 'akinsho/git-conflict.nvim', version = "*",                              config = true },
 
   -- NOTE: This is where your plugins related to LSP can be installed.
@@ -216,14 +217,6 @@ require('lazy').setup({
     },
   },
 
-  {
-    -- Theme inspired by Atom
-    'navarasu/onedark.nvim',
-    priority = 1000,
-    config = function()
-      vim.cmd.colorscheme 'onedark'
-    end,
-  },
 
   {
     -- Set lualine as statusline
@@ -305,7 +298,7 @@ require('lazy').setup({
 --})
 
 vim.opt.termguicolors = true
-require('onedark').load()
+require('nordic').load()
 --vim.cmd('colorscheme bluloco')
 
 vim.o.guifont = "Iosevka Nerd Font:h12"
@@ -429,7 +422,13 @@ end, {})
 
 
 -- Telescope open with ctrl+p
-vim.keymap.set('n', '<C-p>', ":Telescope git_files\n")
+vim.keymap.set('n', '<C-p>', function() 
+  if not pcall(function()
+    vim.cmd("Telescope git_files") 
+  end) then
+    vim.cmd("Telescope find_files")
+  end
+end)--":Telescope git_files\n")
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
