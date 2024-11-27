@@ -68,6 +68,16 @@ vim.opt.rtp:prepend(lazypath)
 --    as they will be available in your neovim runtime.
 require('lazy').setup({
   -- NOTE: First, some plugins that don't require any configuration
+  {
+    'stevearc/oil.nvim',
+    ---@module 'oil'
+    ---@type oil.SetupOpts
+    opts = {
+    },
+    -- Optional dependencies
+    dependencies = { { "echasnovski/mini.icons", opts = {} } },
+    -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if prefer nvim-web-devicons
+  },
   'ggandor/leap.nvim',
   {
     'numToStr/Comment.nvim',
@@ -289,6 +299,13 @@ require('lazy').setup({
   -- { import = 'custom.plugins' },
 }, {})
 
+require('oil').setup({
+  default_file_explorer = true,
+  view_options = {
+    show_hidden = true
+  }
+})
+
 --require("bluloco").setup({
 --  style = "auto",
 --  transparent = false,
@@ -395,7 +412,7 @@ vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
 vim.keymap.set('n', '<Leader>f', vim.lsp.buf.format)
 
-vim.keymap.set('n', '<Leader>ep', ':Explore\n')
+vim.keymap.set('n', '<Leader>ep', ':e .\n')
 
 vim.keymap.set('n', '<Leader>v', ':vsplit\n')
 
