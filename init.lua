@@ -44,6 +44,8 @@ P.S. You can delete this when you're done too. It's your config now :)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+vim.lsp.set_log_level("debug")
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    https://github.com/folke/lazy.nvim
 --    `:help lazy.nvim.txt` for more info
@@ -68,6 +70,7 @@ vim.opt.rtp:prepend(lazypath)
 --    as they will be available in your neovim runtime.
 require('lazy').setup({
   -- NOTE: First, some plugins that don't require any configuration
+  
   {
     'stevearc/oil.nvim',
     ---@module 'oil'
@@ -283,6 +286,7 @@ require('lazy').setup({
     },
     build = ':TSUpdate',
   },
+  'RRethy/base16-nvim',
 
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
@@ -315,8 +319,16 @@ require('oil').setup({
 --})
 
 vim.opt.termguicolors = true
-require('nordic').load()
---vim.cmd('colorscheme bluloco')
+-- require('nordic').load()
+-- require('').setup()
+local colors = {}
+if pcall(function() 
+  colors = require 'custom.plugins.colors'
+end) then
+  require('base16-colorscheme').setup(colors)
+else 
+  vim.cmd('colorscheme base16-ayu-dark')
+end
 
 vim.o.guifont = "Iosevka Nerd Font:h12"
 
@@ -715,10 +727,24 @@ lsp_zero.on_attach(function(client, bufnr)
   on_attach(nil, bufnr)
 end)
 
+
+
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+
 require('lspconfig').rust_analyzer.setup({})
 require('lspconfig').ocamllsp.setup({})
 require('lspconfig').ols.setup({})
 require('lspconfig').svelte.setup({})
+require('lspconfig').kotlin_language_server.setup({})
+require('lspconfig').html.setup({ 
+  capabilities = capabilities,
+})
+
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+
 
 -- require 'lspconfig'.gleam.setup {
 --   cmd = { "glas", "--stdio" }
@@ -759,8 +785,6 @@ local servers = {
 require('neodev').setup()
 
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
 -- Ensure the servers above are installed
 -- local mason_lspconfig = require 'mason-lspconfig'
