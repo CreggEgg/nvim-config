@@ -229,7 +229,15 @@ require('lazy').setup({
       end,
     },
   },
-
+  {
+      'MeanderingProgrammer/render-markdown.nvim',
+      dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' }, -- if you use the mini.nvim suite
+      -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
+      -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+      ---@module 'render-markdown'
+      ---@type render.md.UserConfig
+      opts = {},
+  },
 
   {
     -- Set lualine as statusline
@@ -305,6 +313,25 @@ require('lazy').setup({
 
 require('oil').setup({
   default_file_explorer = true,
+   keymaps = {
+    ["g?"] = { "actions.show_help", mode = "n" },
+    ["<CR>"] = "actions.select",
+    ["<C-s>"] = { "actions.select", opts = { vertical = true } },
+    ["<C-h>"] = { "actions.select", opts = { horizontal = true } },
+    ["<C-t>"] = { "actions.select", opts = { tab = true } },
+    ["<C-c>"] = { "actions.close", mode = "n" },
+    ["<C-l>"] = "actions.refresh",
+    ["-"] = { "actions.parent", mode = "n" },
+    ["_"] = { "actions.open_cwd", mode = "n" },
+    ["`"] = { "actions.cd", mode = "n" },
+    ["~"] = { "actions.cd", opts = { scope = "tab" }, mode = "n" },
+    ["gs"] = { "actions.change_sort", mode = "n" },
+    ["gx"] = "actions.open_external",
+    ["g."] = { "actions.toggle_hidden", mode = "n" },
+    ["g\\"] = { "actions.toggle_trash", mode = "n" },
+  },
+  -- Set to false to disable all of the above keymaps
+  use_default_keymaps = false,
   view_options = {
     show_hidden = true
   }
@@ -324,9 +351,8 @@ vim.opt.termguicolors = true
 local colors = {}
 package.loaded['custom.plugins.colors'] = nil
 if pcall(function() 
-  colors = require 'custom.plugins.colors'
+  colors = vim.json.decode(vim.secure.read(vim.fn.stdpath('config') .. "/colors.json"))
 end) then
-  vim.print(colors)
 
 
   require('base16-colorscheme').setup(colors)
@@ -334,7 +360,7 @@ else
   vim.cmd('colorscheme base16-ayu-dark')
 end
 
-vim.o.guifont = "Iosevka Nerd Font:h12"
+vim.o.guifont = "JetBrainsMono Nerd Font:h12"
 
 
 
@@ -741,16 +767,46 @@ end)
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 
+require('render-markdown').setup({
+    completions = { lsp = { enabled = true } },
+})
 
+
+
+require('lspconfig').nil_ls.setup({
+  autostart = true,
+    capabilities = caps,
+    cmd = { 'nil' },
+    settings = {
+      ['nil'] = {
+        testSetting = 42,
+      },
+    },
+})
 require('lspconfig').rust_analyzer.setup({})
 require('lspconfig').ocamllsp.setup({})
+require('lspconfig').hls.setup({})
 require('lspconfig').ols.setup({})
+require('lspconfig').zls.setup({})
 require('lspconfig').svelte.setup({})
 require('lspconfig').kotlin_language_server.setup({})
 require'lspconfig'.emmet_language_server.setup{}
+require'lspconfig'.jdtls.setup{}
 require('lspconfig').html.setup({ 
   capabilities = capabilities,
 })
+require('lspconfig').ts_ls.setup({})
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+  pattern = "*.wgsl",
+  callback = function()
+    vim.bo.filetype = "wgsl"
+  end,
+})
+require('lspconfig').wgsl_analyzer.setup({
+  filetypes = { 'wgsl' },
+  cmd = {'wgsl-analyzer'}
+})
+
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
